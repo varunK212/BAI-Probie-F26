@@ -1,7 +1,8 @@
 """
 API Module
 
-This module contains pure functions for interacting with the OpenAI API.
+This module contains pure functions for interacting with OpenRouter through the
+OpenAI-compatible Python SDK.
 All functions here follow functional programming principles:
 - No side effects (besides API calls)
 - Clear inputs and outputs
@@ -13,22 +14,23 @@ Key Concepts:
 - Error handling: Gracefully handle things that can go wrong
 """
 
-from openai import OpenAI
 from typing import List
 
+from openai import OpenAI
+
 from src.settings import settings
-from src.chatbot.constants import SYSTEM_PROMPT
+from src.chatbot.constants import OPENROUTER_BASE_URL, SYSTEM_PROMPT
 from src.chatbot.models import ChatMessage
 
 
-# TODO: Implement create_client function
-# This function creates and returns an OpenAI client object.
-# The client is what we use to make API calls to OpenAI.
+# create_client function
+# This function creates and returns an OpenAI client configured for OpenRouter.
+# The client is what we use to make API calls to OpenRouter.
 #
 # Instructions:
 # 1. Create a function called create_client that takes Settings as a parameter
 # 2. Return type should be OpenAI
-# 3. Create an OpenAI client using: OpenAI(api_key=settings.openai_api_key)
+# 3. Create an OpenAI client using: OpenAI(api_key=settings.openai_api_key) # used openrouter 
 # 4. Return the client
 # 5. Add a docstring explaining what the function does
 #
@@ -37,12 +39,17 @@ from src.chatbot.models import ChatMessage
 # Example usage after completion:
 #   client = create_client()
 #
-# Your code here:
-# def create_client() -> ...:
+def create_client() -> OpenAI:
+    """Create an OpenAI-compatible client configured for OpenRouter."""
+
+    return OpenAI(
+        api_key=settings.OPENROUTER_API_KEY,
+        base_url=OPENROUTER_BASE_URL,
+    )
 
 
-# TODO: Implement get_chat_response function
-# This is the main function that sends messages to OpenAI and gets a response.
+# get_chat_response function
+# This is the main function that sends messages to OpenRouter and gets a response.
 # It needs to handle the API call and potential errors gracefully.
 #
 # Instructions:
@@ -51,9 +58,9 @@ from src.chatbot.models import ChatMessage
 #    - messages: List[ChatMessage]
 #    - model: str (which GPT model to use)
 # 2. Return type should be ChatMessage (the assistant's reply)
-# 3. Convert the ChatMessage objects to dictionaries (OpenAI expects dicts)
+# 3. Convert the ChatMessage objects to dictionaries (the API expects dicts)
 #    Hint: message.model_dump() converts a Pydantic model to a dict
-# 4. Call the OpenAI API using:
+# 4. Call the OpenRouter API using:
 #    response = client.chat.completions.create(
 #        model=model,
 #        messages=message_dicts
@@ -70,13 +77,13 @@ from src.chatbot.models import ChatMessage
 #     try:
 #         # Convert messages to dicts
 #         message_dicts = [msg.model_dump() for msg in messages]
-#         
-#         # Call OpenAI API
+#
+#         # Call OpenRouter API
 #         response = client.chat.completions.create(...)
-#         
+#
 #         # Extract the assistant's message
 #         assistant_message = response.choices[0].message
-#         
+#
 #         # Create and return ChatMessage
 #         return ChatMessage(
 #             role=assistant_message.role,
@@ -88,10 +95,29 @@ from src.chatbot.models import ChatMessage
 #         # so the main program can decide what to do
 #         raise
 #
-# Your code here:
+def get_chat_response(
+     
+    client: OpenAI, messages: List[ChatMessage], model: str
+) -> ChatMessage:
+    """serialize message and calls chat completions. returns a chat message"""
+
+    message_dicts = [message.model_dump() for message in messages]
+    response = client.chat.completions.create(
+        model=model,
+        messages=message_dicts,
+    )
+
+    assistant_message = response.choices[0].message
+    if assistant_message.content is None:
+        raise ValueError("OpenRouter returned a response without text content.")
+
+    return ChatMessage(
+        role=assistant_message.role,
+        content=assistant_message.content,
+    )
 
 
-# TODO: Implement create_system_message function (Helper Function)
+# create_system_message function (Helper Function)
 # This helper function creates the system message that defines the chatbot's personality.
 # It's a simple function, but demonstrates good code organization.
 #
@@ -104,5 +130,7 @@ from src.chatbot.models import ChatMessage
 # Example usage after completion:
 #   system_msg = create_system_message()
 #
-# Your code here:
+def create_system_message() -> ChatMessage:
+    """Creates the initial system prompt"""
 
+    return ChatMessage(role="system", content=SYSTEM_PROMPT)

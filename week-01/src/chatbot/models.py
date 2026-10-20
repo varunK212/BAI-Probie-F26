@@ -11,21 +11,22 @@ Key Concepts:
 - Literal types: Restrict a field to specific allowed values
 
 Why use models?
-- Catch errors early (before sending bad data to OpenAI)
+- Catch errors early (before sending bad data to OpenRouter)
 - Self-documenting code (clear what data looks like)
 - IDE support (autocomplete and type checking)
 - Type safety: Prevent invalid data from being created
 """
 
-from pydantic import BaseModel
 from typing import Literal
 
+from pydantic import BaseModel
 
-# TODO: Create a ChatMessage Pydantic model
+
+# ChatMessage Pydantic model
 # This model represents a single message in the conversation.
 # Each message has a "role" (who sent it) and "content" (what they said).
 #
-# The OpenAI API expects messages in this exact format:
+# OpenRouter's OpenAI-compatible API expects messages in this exact format:
 # {"role": "user", "content": "Hello!"}
 # {"role": "assistant", "content": "Hi there!"}
 # {"role": "system", "content": "You are a helpful assistant."}
@@ -34,5 +35,6 @@ from typing import Literal
 # We use Literal to restrict role to exactly: "user", "assistant", or "system"
 #
 class ChatMessage(BaseModel):
-    change_this_variables: str
 
+    role: Literal["user", "assistant", "system"]
+    content: str

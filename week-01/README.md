@@ -1,6 +1,6 @@
 # Personal Chatbot Assignment
 
-Welcome to week 1! In this assignment, you'll build a basic chatbot using OpenAI's API. You'll learn about API integration, environment configuration, type safety, and functional programming while creating something useful.
+Welcome to week 1! In this assignment, you'll build a basic chatbot using OpenRouter's OpenAI-compatible API. You'll learn about API integration, environment configuration, type safety, and functional programming while creating something useful.
 
 
 **Estimated Time**: 3-4 hours
@@ -32,9 +32,9 @@ Verify installation:
 uv --version
 ```
 
-### Step 2: Get Your OpenAI API Key
+### Step 2: Get Your OpenRouter API Key
 
-The OPENAI_API_KEY is available on the BAI Probie GitHub homepage
+Create an API key in your OpenRouter account.
 
 
 ### Step 3: Navigate to Project Directory
@@ -72,7 +72,7 @@ uv sync
 ```
 
 This installs all required packages:
-- `openai`: Official OpenAI Python SDK
+- `openai`: OpenAI Python SDK, configured to use OpenRouter's compatible API
 - `pydantic`: Data validation using type hints
 - `pydantic-settings`: Settings management with Pydantic
 - `rich`: Formatting the messages in the terminal
@@ -84,9 +84,9 @@ This installs all required packages:
    cp .env.example .env
    ```
 
-2. Open `.env` in your editor and add your OpenAI API key:
+2. Open `.env` in your editor and add your OpenRouter API key:
    ```bash
-   OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxx
+   OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxx
    ```
 
 3. **That's it!** The model and system prompt are configured in the code (see `src/chatbot/constants.py`)
@@ -127,7 +127,7 @@ week-01/
 │   ├── constants.py      # ✅ COMPLETE - Application constants | (OPTIONAL) Edit system prompt
 │   ├── models.py         # ⚠️ TODO - Pydantic data models
 │   ├── ui.py             # ✅ COMPLETE - Terminal UI functions
-│   ├── api.py            # ⚠️ TODO - OpenAI API functions
+│   ├── api.py            # ⚠️ TODO - OpenRouter API functions
 │   └── main.py           # ⚠️ TODO - Main conversation loop
 ├── pyproject.toml        # Project dependencies
 ├── .env.example          # Environment template
@@ -157,15 +157,15 @@ Open `src/chatbot/models.py` and complete:
 
 ### 2. Complete `api.py` (API Integration)
 
-**What to do**: Implement functions to interact with OpenAI's API.
+**What to do**: Implement functions to interact with OpenRouter's OpenAI-compatible API.
 
 Open `src/chatbot/api.py` and complete:
-- [ ] `create_client()` - Initialize OpenAI client
+- [ ] `create_client()` - Initialize the OpenAI-compatible client
 - [ ] `create_system_message()` - Helper for system messages
 - [ ] `get_chat_response()` - Main API call function (returns ChatMessage directly)
 
 **Tips**:
-- The OpenAI client is created with: `OpenAI(api_key="your-key")`
+- The client uses `OpenAI(api_key="your-key", base_url="https://openrouter.ai/api/v1")`
 - Use `model.model_dump()` to convert Pydantic models to dicts for the API
 - `get_chat_response()` returns a ChatMessage (the assistant's reply) - no wrapper needed!
 - The API call structure is in the TODO comments
@@ -175,7 +175,7 @@ Open `src/chatbot/api.py` and complete:
 **What to do**: Build the conversation loop that users interact with.
 
 Open `src/chatbot/main.py` and complete:
-- [ ] Create OpenAI client
+- [ ] Create the OpenRouter client
 - [ ] Initialize conversation history
 - [ ] Implement the main conversation loop
 
@@ -218,7 +218,7 @@ Test these scenarios:
 │ 🤖 Personal Chatbot                          │
 │                                               │
 │ Welcome! I'm your AI assistant powered by    │
-│ OpenAI.                                       │
+│ OpenRouter.                                   │
 │                                               │
 │ Commands:                                     │
 │ • Type your message and press Enter to chat  │
@@ -246,7 +246,8 @@ You: quit
 
 ## 🎓 Resources
 
-- **OpenAI API Docs**: [platform.openai.com/docs](https://platform.openai.com/docs)
+- **OpenRouter Docs**: [openrouter.ai/docs](https://openrouter.ai/docs)
+- **OpenAI SDK Docs**: [developers.openai.com/api/reference/python](https://developers.openai.com/api/reference/python)
 - **Pydantic Documentation**: [docs.pydantic.dev](https://docs.pydantic.dev)
 - **Rich Library**: [rich.readthedocs.io](https://rich.readthedocs.io)
 - **UV Documentation**: [docs.astral.sh/uv](https://docs.astral.sh/uv)

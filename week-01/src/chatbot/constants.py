@@ -17,17 +17,13 @@ The difference between constants and environment variables:
 
 from typing import Literal
 
-# Valid OpenAI models for chat completions
+# OpenRouter uses provider/model identifiers for chat completions.
 # Using Literal type to enforce type checking at development time
-ValidModel = Literal[
-    "gpt-4o-mini",
-    "gpt-oss-120b",
-    "gpt-5-nano",
-]
+ValidModel = Literal["openai/gpt-4o-mini",]
 
-# The OpenAI model to use for chat completions
-# gpt-4o-mini is recommended for this project: fast, capable, and cost-effective
-DEFAULT_MODEL: ValidModel = "gpt-4o-mini"
+# OpenRouter's OpenAI-compatible API endpoint and the model used by default.
+OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+DEFAULT_MODEL: ValidModel = "openai/gpt-4o-mini"
 
 # The system prompt defines the chatbot's personality and behavior
 # This message is sent to the AI at the start of every conversation
@@ -40,4 +36,3 @@ Your role is to:
 - Admit when you don't know something rather than making things up
 
 Keep your responses concise but informative."""
-
